@@ -1,11 +1,13 @@
-import emlFormat from "eml-format";
+import * as emlformat from "eml-format";
+import { decode } from 'html-entities';
 import * as fs from "fs/promises";
 import * as Handelbars from "handlebars";
 import { cloneDeep } from "lodash";
-import { Editor, Plugin } from "obsidian";
+import { Editor, Plugin, htmlToMarkdown } from "obsidian";
 import { DEFAULT_SETTINGS } from "./consts";
 import { MyPluginSettings, ParsedEML } from "./interfaces";
 import { SettingTab } from "./SettingTab";
+
 
 export default class MyPlugin extends Plugin {
   settings: MyPluginSettings;
@@ -26,10 +28,9 @@ export default class MyPlugin extends Plugin {
         const postProcessedTemplate = postProcessTemplate(
           this.settings.template
         );
-        const template = Handelbars.compile(postProcessedTemplate);
+        const template = Handelbars.compile(postProcessedTemplate, {"noEscape": true});
 
         const output = template(postProcessedEML);
-        console.log({ output });
 
         editor.replaceRange(output, editor.getCursor("to"));
       },
@@ -49,11 +50,19 @@ export default class MyPlugin extends Plugin {
   async parseEML(path: string) {
     const eml = await fs.readFile(path, "utf-8");
     let parsedEML: ParsedEML;
-    emlFormat.read(eml, function (error: Error, data: ParsedEML) {
+    emlformat.read(eml, function (error: Error, data: ParsedEML) {
       if (error) return console.log(error);
-      console.log(data);
       parsedEML = data;
     });
+    if (!parsedEML.text && parsedEML.html) {
+      let text;
+      try {
+        text = htmlToMarkdown(parsedEML.html)
+      } catch {
+        text = parsedEML.html
+      }
+      parsedEML.text = decode(text)
+    }
     return parsedEML;
   }
 
@@ -66,8 +75,6 @@ export default class MyPlugin extends Plugin {
 
       copy.attachments[i].name = name;
     });
-
-    copy.date = copy.date?.toLocaleDateString();
 
     copy.to = [copy.to].flat(10);
     return copy;

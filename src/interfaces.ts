@@ -14,6 +14,8 @@ export interface ParsedEML {
   headers: Headers;
   subject: string;
   to: Person | Person[];
+  text?: string;
+  html?: string;
 }
 
 export interface Attachment {

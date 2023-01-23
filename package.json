@@ -37,7 +37,7 @@
 		"@types/lodash": "^4.14.178",
 		"@types/node": "^16.11.1",
 		"obsidian": "^0.12.17",
-		"rollup": "^2.58.3",
+		"rollup": "^2.79.1",
 		"rollup-plugin-ignore": "^1.0.10",
 		"standard-version": "^9.3.2",
 		"tslib": "2.3.1",
@@ -46,6 +46,7 @@
 	"dependencies": {
 		"eml-format": "^0.6.1",
 		"handlebars": "^4.7.7",
+		"html-entities": "^2.3.3",
 		"lodash": "^4.17.21"
 	}
 }
