@@ -6,5 +6,5 @@
 	"description": "Bring emails into Obsidian with ease",
 	"author": "SkepticMystic",
 	"authorUrl": "https://github.com/SkepticMystic/email-templates",
-	"isDesktopOnly": false
+	"isDesktopOnly": true
 }
